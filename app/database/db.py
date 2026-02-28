@@ -15,18 +15,26 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 
 # Crear engine
-# Usar PyMySQL en lugar de MySQLdb
-if settings.database_url.startswith("mysql+pymysql://"):
-    database_url = settings.database_url
+# Usar SQLite o MySQL según la configuración
+if settings.database_url.startswith("sqlite://"):
+    # SQLite no necesita pool ni charset
+    engine = create_engine(
+        settings.database_url,
+        echo=settings.database_echo,
+        connect_args={"check_same_thread": False},
+    )
 else:
-    database_url = settings.database_url.replace("mysql://", "mysql+pymysql://")
-
-engine = create_engine(
-    database_url,
-    echo=settings.database_echo,
-    poolclass=NullPool,
-    connect_args={"charset": "utf8mb4"},
-)
+    # MySQL con PyMySQL
+    database_url = settings.database_url
+    if not database_url.startswith("mysql+pymysql://"):
+        database_url = database_url.replace("mysql://", "mysql+pymysql://")
+    
+    engine = create_engine(
+        database_url,
+        echo=settings.database_echo,
+        poolclass=NullPool,
+        connect_args={"charset": "utf8mb4"},
+    )
 
 # Crear session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
