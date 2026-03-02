@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     # ============ Database Configuration ============
     database_url: str = os.getenv(
-        "DATABASE_URL", "mysql+pymysql://root:password@localhost:3306/lead_reactivation"
+        "DATABASE_URL", "sqlite:///./lead_reactivation.db"
     )
     database_echo: bool = os.getenv("DATABASE_ECHO", "False").lower() == "true"
 
