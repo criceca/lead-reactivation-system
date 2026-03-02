@@ -1,2 +1,11 @@
 Pipfile
 Pipfile.lock
+.env
+
+# Python temp files
+__pycache__/
+*.pyc
+*.py[cod]
+
+
+lead_reactivation.db

@@ -114,14 +114,42 @@ def get_conversations_by_lead(db: Session, lead_id: int) -> list[Conversation]:
 
 
 def create_conversation(
-    db: Session, lead_id: int, agent_id: str = "lead-reactivation-agent", status: str = "active"
+    db: Session,
+    lead_name: str = None,
+    lead_email: str = None,
+    lead_phone: str = None,
+    lead_id: int = None,
+    agent_id: str = "lead-reactivation-agent",
+    status: str = "active",
+    channel: str = "api",
+    telegram_user_id: int = None,
+    telegram_chat_id: int = None,
 ) -> Conversation:
     """Crear una nueva conversación"""
-    conversation = Conversation(lead_id=lead_id, agent_id=agent_id, status=status)
+    # Si no hay lead_id pero hay datos de lead, crear el lead primero
+    if not lead_id and lead_email:
+        lead = get_lead_by_email(db, lead_email)
+        if not lead:
+            lead = create_lead(
+                db,
+                name=lead_name or "Unknown",
+                email=lead_email,
+                phone=lead_phone,
+            )
+        lead_id = lead.id
+    
+    conversation = Conversation(
+        lead_id=lead_id,
+        agent_id=agent_id,
+        status=status,
+        channel=channel,
+        telegram_user_id=telegram_user_id,
+        telegram_chat_id=telegram_chat_id,
+    )
     db.add(conversation)
     db.commit()
     db.refresh(conversation)
-    logger.info(f"Conversation created: {conversation.id} for lead {lead_id}")
+    logger.info(f"Conversation created: {conversation.id} for lead {lead_id} via {channel}")
     return conversation
 
 
@@ -136,6 +164,11 @@ def update_conversation(db: Session, conversation_id: int, **kwargs) -> Conversa
         db.commit()
         db.refresh(conversation)
     return conversation
+
+
+def update_conversation_status(db: Session, conversation_id: int, status: str) -> Conversation:
+    """Actualizar el estado de una conversación"""
+    return update_conversation(db, conversation_id, status=status)
 
 
 # ============ MESSAGES ============
