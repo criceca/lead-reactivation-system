@@ -1,2 +1,15 @@
+*venv
+*pyc
+__pycache__/
+
 Pipfile
 Pipfile.lock
+.env
+
+# Python temp files
+__pycache__/
+*.pyc
+*.py[cod]
+
+
+

@@ -25,6 +25,10 @@ class Lead(Base):
     value = Column(Float, default=0)
     notes = Column(Text)
     last_contact = Column(DateTime)
+    
+    # Campo de canal preferido
+    preferred_channel = Column(String(50), default="telegram")  # telegram, email, api
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -45,8 +49,14 @@ class Conversation(Base):
     id = Column(Integer, primary_key=True, index=True)
     lead_id = Column(Integer, ForeignKey("leads.id"), nullable=False, index=True)
     agent_id = Column(String(255), default="lead-reactivation-agent")
+    channel = Column(String(50), default="api", index=True)  # telegram, email, api
     status = Column(String(50), default="active", index=True)  # active, completed, escalated
     s3_key = Column(String(500))  # Clave de S3 para almacenar conversación
+    
+    # Campos de Telegram
+    telegram_user_id = Column(Integer, index=True)  # ID del usuario en Telegram
+    telegram_chat_id = Column(Integer, index=True)  # ID del chat en Telegram
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

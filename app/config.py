@@ -11,9 +11,15 @@ class Settings(BaseSettings):
     """Configuración de la aplicación"""
 
     # ============ LLM Configuration ============
+    # OpenAI
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
     llm_model: str = os.getenv("LLM_MODEL", "gpt-4")
     llm_temperature: float = float(os.getenv("LLM_TEMPERATURE", "0.7"))
+    
+    # AWS Bedrock
+    use_bedrock: bool = os.getenv("USE_BEDROCK", "False").lower() == "true"
+    bedrock_model: str = os.getenv("BEDROCK_MODEL", "anthropic.claude-3-sonnet-20240229-v1:0")
+    bedrock_region: str = os.getenv("BEDROCK_REGION", "us-east-1")
 
     # ============ Database Configuration ============
     database_url: str = os.getenv(
@@ -21,8 +27,13 @@ class Settings(BaseSettings):
     )
     database_echo: bool = os.getenv("DATABASE_ECHO", "False").lower() == "true"
 
-    # ============ Email Configuration ============
-    smtp_host: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
+    # ============ Telegram Configuration ============
+    telegram_bot_token: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    telegram_webhook_url: str = os.getenv("TELEGRAM_WEBHOOK_URL", "")
+    telegram_admin_chat_id: str = os.getenv("TELEGRAM_ADMIN_CHAT_ID", "")
+    
+    # ============ Email Configuration (Opcional) ============
+    smtp_host: str = os.getenv("SMTP_HOST", "")
     smtp_port: int = int(os.getenv("SMTP_PORT", "587"))
     smtp_user: str = os.getenv("SMTP_USER", "")
     smtp_password: str = os.getenv("SMTP_PASSWORD", "")
@@ -48,10 +59,14 @@ class Settings(BaseSettings):
     agent_timeout: int = int(os.getenv("AGENT_TIMEOUT", "300"))
     max_conversation_turns: int = int(os.getenv("MAX_CONVERSATION_TURNS", "20"))
     agent_debug: bool = os.getenv("AGENT_DEBUG", "False").lower() == "true"
+    enable_email_notifications: bool = os.getenv("ENABLE_EMAIL_NOTIFICATIONS", "False").lower() == "true"
 
     # ============ Environment ============
     environment: str = os.getenv("ENVIRONMENT", "development")
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
+    
+    # ============ Conversation Channel ============
+    conversation_channel: str = os.getenv("CONVERSATION_CHANNEL", "telegram")  # telegram, email, api
 
     class Config:
         env_file = ".env"

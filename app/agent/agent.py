@@ -6,7 +6,7 @@ import logging
 from typing import List, Dict, Any
 from datetime import datetime
 
-from langchain.chat_models import ChatOpenAI
+# LLM provider maneja OpenAI y Bedrock
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import LLMChain
@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.database import crud
+from app.llm.llm_provider import get_llm_provider
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -51,12 +52,10 @@ class LeadReactivationAgent:
 
     def __init__(self):
         """Inicializar el agente"""
-        self.llm = ChatOpenAI(
-            model_name=settings.llm_model,
-            temperature=settings.llm_temperature,
-            openai_api_key=settings.openai_api_key,
-            max_tokens=2000,
-        )
+        # Obtener proveedor de LLM (OpenAI o Bedrock)
+        llm_provider = get_llm_provider()
+        self.llm = llm_provider.get_llm()
+        self.llm_provider = llm_provider.get_provider()
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True,
@@ -68,7 +67,7 @@ class LeadReactivationAgent:
             ("human", "{input}"),
         ])
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt, memory=self.memory)
-        logger.info("LeadReactivationAgent initialized")
+        logger.info(f"LeadReactivationAgent initialized with {self.llm_provider} LLM")
 
     def initiate_reactivation(
         self,
