@@ -2,269 +2,349 @@
 Schemas Pydantic para validación de datos
 """
 
-from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import Optional, List
+from pydantic import BaseModel, EmailStr, Field, field_validator
+from enum import Enum
 
 
-# ============ LEAD SCHEMAS ============
+# ============ Enums ============
 
+class LeadStatus(str, Enum):
+ """Estados válidos para leads"""
+ COLD = "cold"
+ WARM = "warm"
+ HOT = "hot"
+ REACTIVATED = "reactivated"
+ LOST = "lost"
+
+
+class ConversationStatus(str, Enum):
+ """Estados válidos para conversaciones"""
+ ACTIVE = "active"
+ COMPLETED = "completed"
+ ESCALATED = "escalated"
+ PAUSED = "paused"
+
+
+class RequirementPriority(str, Enum):
+ """Prioridades válidas para requerimientos"""
+ LOW = "low"
+ MEDIUM = "medium"
+ HIGH = "high"
+ CRITICAL = "critical"
+
+
+class RequirementStatus(str, Enum):
+ """Estados válidos para requerimientos"""
+ CAPTURED = "captured"
+ CONFIRMED = "confirmed"
+ IN_PROGRESS = "in_progress"
+ COMPLETED = "completed"
+
+
+class EscalationStatus(str, Enum):
+ """Estados válidos para escalaciones"""
+ PENDING = "pending"
+ ASSIGNED = "assigned"
+ IN_PROGRESS = "in_progress"
+ RESOLVED = "resolved"
+
+
+class Channel(str, Enum):
+ """Canales de comunicación válidos"""
+ TELEGRAM = "telegram"
+ EMAIL = "email"
+ API = "api"
+ WHATSAPP = "whatsapp"
+
+
+class MessageRole(str, Enum):
+ """Roles válidos para mensajes"""
+ AGENT = "agent"
+ LEAD = "lead"
+ SYSTEM = "system"
+
+
+# ============ Lead Schemas ============
 
 class LeadBase(BaseModel):
-    """Schema base para leads"""
-
-    name: str = Field(..., min_length=1, max_length=255)
-    email: EmailStr
-    phone: Optional[str] = Field(None, max_length=20)
-    company: Optional[str] = Field(None, max_length=255)
-    status: str = Field(default="cold", max_length=50)
-    value: float = Field(default=0, ge=0)
-    notes: Optional[str] = None
+ """Schema base para Lead"""
+ name: str = Field(..., min_length=1, max_length=255)
+ email: EmailStr
+ phone: Optional[str] = Field(None, max_length=20)
+ company: Optional[str] = Field(None, max_length=255)
+ status: LeadStatus = LeadStatus.COLD
+ value: float = Field(default=0, ge=0)
+ notes: Optional[str] = None
+ preferred_channel: Channel = Channel.TELEGRAM
 
 
 class LeadCreate(LeadBase):
-    """Schema para crear leads"""
-
-    pass
+ """Schema para crear Lead"""
+ pass
 
 
 class LeadUpdate(BaseModel):
-    """Schema para actualizar leads"""
-
-    name: Optional[str] = None
-    phone: Optional[str] = None
-    company: Optional[str] = None
-    status: Optional[str] = None
-    value: Optional[float] = None
-    notes: Optional[str] = None
-
-
-class LeadResponse(LeadBase):
-    """Schema para respuestas de leads"""
-
-    id: int
-    last_contact: Optional[datetime] = None
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
+ """Schema para actualizar Lead"""
+ name: Optional[str] = Field(None, min_length=1, max_length=255)
+ email: Optional[EmailStr] = None
+ phone: Optional[str] = Field(None, max_length=20)
+ company: Optional[str] = Field(None, max_length=255)
+ status: Optional[LeadStatus] = None
+ value: Optional[float] = Field(None, ge=0)
+ notes: Optional[str] = None
+ preferred_channel: Optional[Channel] = None
+ last_contact: Optional[datetime] = None
 
 
-# ============ CONVERSATION SCHEMAS ============
+class Lead(LeadBase):
+ """Schema completo de Lead"""
+ id: int
+ last_contact: Optional[datetime] = None
+ created_at: datetime
+ updated_at: datetime
 
+ class Config:
+ from_attributes = True
+
+
+# ============ Conversation Schemas ============
 
 class ConversationBase(BaseModel):
-    """Schema base para conversaciones"""
-
-    lead_id: int
-    agent_id: str = "lead-reactivation-agent"
-    status: str = "active"
+ """Schema base para Conversation"""
+ lead_id: int
+ channel: Channel = Channel.API
+ status: ConversationStatus = ConversationStatus.ACTIVE
 
 
 class ConversationCreate(ConversationBase):
-    """Schema para crear conversaciones"""
-
-    pass
+ """Schema para crear Conversation"""
+ telegram_user_id: Optional[int] = None
+ telegram_chat_id: Optional[int] = None
 
 
 class ConversationUpdate(BaseModel):
-    """Schema para actualizar conversaciones"""
-
-    status: Optional[str] = None
-    s3_key: Optional[str] = None
-
-
-class ConversationResponse(ConversationBase):
-    """Schema para respuestas de conversaciones"""
-
-    id: int
-    s3_key: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
+ """Schema para actualizar Conversation"""
+ status: Optional[ConversationStatus] = None
+ s3_key: Optional[str] = None
 
 
-# ============ MESSAGE SCHEMAS ============
+class Conversation(ConversationBase):
+ """Schema completo de Conversation"""
+ id: int
+ agent_id: str
+ telegram_user_id: Optional[int] = None
+ telegram_chat_id: Optional[int] = None
+ s3_key: Optional[str] = None
+ created_at: datetime
+ updated_at: datetime
 
+ class Config:
+ from_attributes = True
+
+
+# ============ Message Schemas ============
 
 class MessageBase(BaseModel):
-    """Schema base para mensajes"""
-
-    role: str = Field(..., max_length=50)
-    content: str
+ """Schema base para Message"""
+ conversation_id: int
+ role: MessageRole
+ content: str = Field(..., min_length=1)
 
 
 class MessageCreate(MessageBase):
-    """Schema para crear mensajes"""
-
-    pass
-
-
-class MessageResponse(MessageBase):
-    """Schema para respuestas de mensajes"""
-
-    id: int
-    conversation_id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
+ """Schema para crear Message"""
+ pass
 
 
-# ============ REQUIREMENT SCHEMAS ============
+class Message(MessageBase):
+ """Schema completo de Message"""
+ id: int
+ created_at: datetime
 
+ class Config:
+ from_attributes = True
+
+
+# ============ Requirement Schemas ============
 
 class RequirementBase(BaseModel):
-    """Schema base para requerimientos"""
-
-    title: str = Field(..., min_length=1, max_length=255)
-    description: Optional[str] = None
-    priority: str = Field(default="medium", max_length=50)
+ """Schema base para Requirement"""
+ conversation_id: int
+ lead_id: int
+ title: str = Field(..., min_length=1, max_length=255)
+ description: Optional[str] = None
+ priority: RequirementPriority = RequirementPriority.MEDIUM
+ status: RequirementStatus = RequirementStatus.CAPTURED
 
 
 class RequirementCreate(RequirementBase):
-    """Schema para crear requerimientos"""
-
-    pass
+ """Schema para crear Requirement"""
+ pass
 
 
 class RequirementUpdate(BaseModel):
-    """Schema para actualizar requerimientos"""
-
-    title: Optional[str] = None
-    description: Optional[str] = None
-    priority: Optional[str] = None
-    status: Optional[str] = None
-
-
-class RequirementResponse(RequirementBase):
-    """Schema para respuestas de requerimientos"""
-
-    id: int
-    conversation_id: int
-    lead_id: int
-    status: str
-    s3_key: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
+ """Schema para actualizar Requirement"""
+ title: Optional[str] = Field(None, min_length=1, max_length=255)
+ description: Optional[str] = None
+ priority: Optional[RequirementPriority] = None
+ status: Optional[RequirementStatus] = None
+ s3_key: Optional[str] = None
 
 
-# ============ ESCALATION SCHEMAS ============
+class Requirement(RequirementBase):
+ """Schema completo de Requirement"""
+ id: int
+ s3_key: Optional[str] = None
+ created_at: datetime
+ updated_at: datetime
 
+ class Config:
+ from_attributes = True
+
+
+# ============ Escalation Schemas ============
 
 class EscalationBase(BaseModel):
-    """Schema base para escalaciones"""
-
-    reason: str
-    status: str = "pending"
+ """Schema base para Escalation"""
+ conversation_id: int
+ lead_id: int
+ reason: str = Field(..., min_length=1)
+ status: EscalationStatus = EscalationStatus.PENDING
 
 
 class EscalationCreate(EscalationBase):
-    """Schema para crear escalaciones"""
-
-    pass
+ """Schema para crear Escalation"""
+ pass
 
 
 class EscalationUpdate(BaseModel):
-    """Schema para actualizar escalaciones"""
-
-    status: Optional[str] = None
-    assigned_to: Optional[str] = None
-    notes: Optional[str] = None
-
-
-class EscalationResponse(EscalationBase):
-    """Schema para respuestas de escalaciones"""
-
-    id: int
-    conversation_id: int
-    lead_id: int
-    assigned_to: Optional[str] = None
-    notes: Optional[str] = None
-    s3_key: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
+ """Schema para actualizar Escalation"""
+ status: Optional[EscalationStatus] = None
+ assigned_to: Optional[str] = None
+ notes: Optional[str] = None
+ s3_key: Optional[str] = None
 
 
-# ============ AGENT SCHEMAS ============
+class Escalation(EscalationBase):
+ """Schema completo de Escalation"""
+ id: int
+ assigned_to: Optional[str] = None
+ notes: Optional[str] = None
+ s3_key: Optional[str] = None
+ created_at: datetime
+ updated_at: datetime
+
+ class Config:
+ from_attributes = True
+
+
+# ============ Agent Schemas ============
+
+class AgentResponse(BaseModel):
+ """Schema para respuesta del agente"""
+ message: str
+ requirements_identified: List[str] = []
+ should_escalate: bool = False
+ sentiment: str = "neutral"
+ confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+
+
+class ConversationMessage(BaseModel):
+ """Schema para mensaje en conversación"""
+ conversation_id: int
+ message: str = Field(..., min_length=1)
+
+
+class ReactivationRequest(BaseModel):
+ """Schema para solicitud de reactivación"""
+ lead_id: int
+ initial_message: Optional[str] = None
+
+
+# ============ Dashboard Schemas ============
+
+class DashboardStats(BaseModel):
+ """Schema para estadísticas del dashboard"""
+ total_leads: int
+ cold_leads: int
+ warm_leads: int
+ hot_leads: int
+ reactivated_leads: int
+ active_conversations: int
+ pending_escalations: int
+ total_requirements: int
+
+
+# ============ Response Schemas ============
+
+class ConversationResponse(BaseModel):
+ """Schema para respuesta de conversación"""
+ id: int
+ lead_id: int
+ agent_id: str
+ channel: Channel
+ status: ConversationStatus
+ telegram_user_id: Optional[int] = None
+ telegram_chat_id: Optional[int] = None
+ s3_key: Optional[str] = None
+ created_at: datetime
+ updated_at: datetime
+ messages: List[Message] = []
+
+ class Config:
+ from_attributes = True
+
+
+class RequirementResponse(BaseModel):
+ """Schema para respuesta de requerimiento"""
+ id: int
+ conversation_id: int
+ lead_id: int
+ title: str
+ description: Optional[str] = None
+ priority: RequirementPriority
+ status: RequirementStatus
+ s3_key: Optional[str] = None
+ created_at: datetime
+ updated_at: datetime
+
+ class Config:
+ from_attributes = True
+
+
+class EscalationResponse(BaseModel):
+ """Schema para respuesta de escalación"""
+ id: int
+ conversation_id: int
+ lead_id: int
+ reason: str
+ status: EscalationStatus
+ assigned_to: Optional[str] = None
+ notes: Optional[str] = None
+ s3_key: Optional[str] = None
+ created_at: datetime
+ updated_at: datetime
+
+ class Config:
+ from_attributes = True
 
 
 class AgentInfoResponse(BaseModel):
-    """Schema para información del agente"""
-
-    model: str
-    timeout: int
-    max_turns: int
-    tools: List[str]
-
-
-# ============ DASHBOARD SCHEMAS ============
+ """Schema para información del agente"""
+ name: str
+ version: str
+ model: str
+ tools: List[str] = []
+ capabilities: List[str] = []
 
 
 class DashboardStatsResponse(BaseModel):
-    """Schema para estadísticas del dashboard"""
-
-    cold_leads: int
-    warm_leads: int
-    hot_leads: int
-    reactivated_leads: int
-    pending_escalations: int
-    total_leads: int
-
-
-# ============ CONVERSATION FLOW SCHEMAS ============
-
-
-class InitiateReactivationRequest(BaseModel):
-    """Schema para iniciar reactivación"""
-
-    lead_id: int
-
-
-class InitiateReactivationResponse(BaseModel):
-    """Schema para respuesta de reactivación iniciada"""
-
-    success: bool
-    message: str
-    conversation_id: int
-    agent_response: str
-
-
-class SendMessageRequest(BaseModel):
-    """Schema para enviar mensaje"""
-
-    content: str
-    role: str = "lead"
-
-
-class SendMessageResponse(BaseModel):
-    """Schema para respuesta de mensaje enviado"""
-
-    success: bool
-    message: str
-    agent_response: str
-    requirements_identified: List[str]
-    escalated: bool
-
-
-class ProcessLeadResponseRequest(BaseModel):
-    """Schema para procesar respuesta del lead"""
-
-    content: str
-
-
-class ProcessLeadResponseResponse(BaseModel):
-    """Schema para respuesta de procesamiento"""
-
-    agent_response: str
-    requirements_identified: List[str]
-    should_escalate: bool
+ """Schema para respuesta de estadísticas del dashboard"""
+ cold_leads: int
+ warm_leads: int
+ hot_leads: int
+ reactivated_leads: int
+ pending_escalations: int
+ total_leads: int
