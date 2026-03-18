@@ -226,14 +226,9 @@ Formato JSON:
 
  def get_agent_info(self) -> Dict[str, Any]:
  """Obtener información del agente"""
- # Obtener el modelo correcto según el proveedor
- llm_provider = get_llm_provider()
- model_info = llm_provider.get_model_info()
- 
  return {
- "provider": model_info["provider"],
- "model": model_info["model"],
- "temperature": model_info["temperature"],
+ "provider": self.llm_provider,
+ "model": settings.llm_model if not settings.use_bedrock else settings.bedrock_model,
  "timeout": settings.agent_timeout,
  "max_turns": settings.max_conversation_turns,
  "tools": [tool.name for tool in self.tools],

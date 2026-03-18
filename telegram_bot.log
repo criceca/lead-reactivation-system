@@ -1,0 +1,206 @@
+2026-03-17 20:50:00,291 - __main__ - INFO - 🤖 Iniciando bot de Telegram...
+2026-03-17 20:50:00,291 - __main__ - INFO - Token: 8224241905:AAGVP2dHV...
+2026-03-17 20:50:00,837 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getMe "HTTP/1.1 200 OK"
+2026-03-17 20:50:00,837 - telegram.ext.Application - INFO - Application started
+2026-03-17 20:50:00,996 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/deleteWebhook "HTTP/1.1 200 OK"
+2026-03-17 20:50:00,997 - app.telegram.telegram_handler - INFO - ✓ Bot de Telegram iniciado correctamente
+2026-03-17 20:50:01,157 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getMe "HTTP/1.1 200 OK"
+2026-03-17 20:50:01,157 - app.telegram.telegram_handler - INFO - ✓ Bot username: @IgniteLeadsbot
+2026-03-17 20:50:01,157 - __main__ - INFO - ✅ Bot de Telegram corriendo
+2026-03-17 20:50:01,158 - __main__ - INFO - Presiona Ctrl+C para detener
+2026-03-17 20:50:11,465 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:50:21,621 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:50:25,993 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:50:25,994 - app.telegram.telegram_handler - INFO - ============================================================
+2026-03-17 20:50:25,994 - app.telegram.telegram_handler - INFO - 📱 /start recibido
+2026-03-17 20:50:25,994 - app.telegram.telegram_handler - INFO - Usuario ID: 1506837565
+2026-03-17 20:50:25,994 - app.telegram.telegram_handler - INFO - Username: @ccelisc
+2026-03-17 20:50:25,994 - app.telegram.telegram_handler - INFO - Nombre: cristian celis
+2026-03-17 20:50:25,995 - app.telegram.telegram_handler - INFO - Chat ID: 1506837565
+2026-03-17 20:50:25,995 - app.telegram.telegram_handler - INFO - ============================================================
+2026-03-17 20:50:25,995 - app.telegram.telegram_handler - INFO - 🔍 Buscando lead con username: @ccelisc
+2026-03-17 20:50:26,015 - app.telegram.telegram_handler - INFO - ✅ Lead encontrado por username: 4 - cristian celis
+2026-03-17 20:50:26,015 - app.telegram.telegram_handler - INFO - 💬 Creando conversación...
+2026-03-17 20:50:26,020 - app.database.crud - INFO - Conversation created: 8 for lead 4 via telegram
+2026-03-17 20:50:26,021 - app.telegram.telegram_handler - INFO - ✅ Conversación creada: 8
+2026-03-17 20:50:26,022 - app.telegram.telegram_handler - INFO - 📤 Enviando mensaje de bienvenida...
+2026-03-17 20:50:26,649 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendMessage "HTTP/1.1 200 OK"
+2026-03-17 20:50:26,650 - app.telegram.telegram_handler - INFO - ✅ Mensaje de bienvenida enviado
+2026-03-17 20:50:26,650 - app.telegram.telegram_handler - INFO - 🤖 Iniciando agente...
+2026-03-17 20:50:27,940 - app.llm.llm_provider - INFO - ✓ LLM inicializado con OpenRouter: qwen/qwen-2.5-72b-instruct
+2026-03-17 20:50:27,940 - app.tools.crm_tools - INFO - ✓ Created 5 CRM tools with DB session
+2026-03-17 20:50:27,940 - app.agent.agent - INFO - ✓ Agent initialized with openrouter
+2026-03-17 20:50:27,940 - app.agent.agent - INFO - ✓ 5 tools available
+2026-03-17 20:50:28,597 - httpx - INFO - HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-17 20:50:32,353 - app.database.crud - INFO - Message created: 5 in conversation 8
+2026-03-17 20:50:32,359 - app.database.crud - INFO - Lead updated: 4
+2026-03-17 20:50:32,359 - app.agent.agent - INFO - ✓ Reactivation initiated for lead 4
+2026-03-17 20:50:32,359 - app.telegram.telegram_handler - INFO - 📤 Enviando respuesta del agente...
+2026-03-17 20:50:32,970 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendMessage "HTTP/1.1 200 OK"
+2026-03-17 20:50:32,971 - app.telegram.telegram_handler - INFO - ✅ Respuesta del agente enviada
+2026-03-17 20:50:32,971 - app.telegram.telegram_handler - INFO - ============================================================
+2026-03-17 20:50:32,971 - app.telegram.telegram_handler - INFO - ✅ /start procesado exitosamente
+2026-03-17 20:50:32,972 - app.telegram.telegram_handler - INFO - ============================================================
+2026-03-17 20:50:36,178 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:50:46,335 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:50:56,494 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:51:06,653 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:51:16,811 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:51:26,979 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:51:37,140 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:51:47,301 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:51:57,458 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:52:07,615 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:52:17,773 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:52:27,928 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:52:38,084 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:52:48,243 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:52:58,421 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:53:08,578 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:53:18,734 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:53:28,892 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:53:39,048 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:53:49,203 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:53:59,361 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:54:09,517 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:54:19,674 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:54:29,833 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:54:39,988 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:54:50,146 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:00,302 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:10,458 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:20,613 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:30,771 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:31,481 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:31,485 - app.telegram.telegram_handler - INFO - Mensaje de 1506837565: En este momento no he encontrado alguien con una b...
+2026-03-17 20:55:32,106 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendChatAction "HTTP/1.1 200 OK"
+2026-03-17 20:55:32,119 - app.tools.crm_tools - INFO - ✓ Created 5 CRM tools with DB session
+2026-03-17 20:55:32,119 - app.agent.agent - INFO - ✓ Agent initialized with openrouter
+2026-03-17 20:55:32,120 - app.agent.agent - INFO - ✓ 5 tools available
+2026-03-17 20:55:32,129 - app.database.crud - INFO - Message created: 6 in conversation 8
+2026-03-17 20:55:32,130 - app.agent.agent - INFO - Loaded 2 messages for conversation 8
+2026-03-17 20:55:33,634 - httpx - INFO - HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-17 20:55:37,370 - app.database.crud - INFO - Message created: 7 in conversation 8
+2026-03-17 20:55:37,371 - app.agent.agent - INFO - ✓ Message processed for conversation 8
+2026-03-17 20:55:37,986 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendMessage "HTTP/1.1 200 OK"
+2026-03-17 20:55:41,652 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:55:51,810 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:56:01,970 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:56:12,126 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:56:22,280 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:56:32,436 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:56:42,593 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:56:52,750 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:02,908 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:13,064 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:23,222 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:31,886 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:31,887 - app.telegram.telegram_handler - INFO - Mensaje de 1506837565: Si...
+2026-03-17 20:57:32,470 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendChatAction "HTTP/1.1 200 OK"
+2026-03-17 20:57:32,472 - app.tools.crm_tools - INFO - ✓ Created 5 CRM tools with DB session
+2026-03-17 20:57:32,472 - app.agent.agent - INFO - ✓ Agent initialized with openrouter
+2026-03-17 20:57:32,472 - app.agent.agent - INFO - ✓ 5 tools available
+2026-03-17 20:57:32,476 - app.database.crud - INFO - Message created: 8 in conversation 8
+2026-03-17 20:57:32,476 - app.agent.agent - INFO - Loaded 4 messages for conversation 8
+2026-03-17 20:57:33,084 - httpx - INFO - HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-17 20:57:37,121 - app.database.crud - INFO - Message created: 9 in conversation 8
+2026-03-17 20:57:37,122 - app.agent.agent - INFO - ✓ Message processed for conversation 8
+2026-03-17 20:57:37,405 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendMessage "HTTP/1.1 200 OK"
+2026-03-17 20:57:42,043 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:52,200 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:59,546 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:57:59,546 - app.telegram.telegram_handler - INFO - Mensaje de 1506837565: Me gustaría para el día viernes a medio día...
+2026-03-17 20:58:00,144 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendChatAction "HTTP/1.1 200 OK"
+2026-03-17 20:58:00,145 - app.tools.crm_tools - INFO - ✓ Created 5 CRM tools with DB session
+2026-03-17 20:58:00,145 - app.agent.agent - INFO - ✓ Agent initialized with openrouter
+2026-03-17 20:58:00,145 - app.agent.agent - INFO - ✓ 5 tools available
+2026-03-17 20:58:00,147 - app.database.crud - INFO - Message created: 10 in conversation 8
+2026-03-17 20:58:00,147 - app.agent.agent - INFO - Loaded 6 messages for conversation 8
+2026-03-17 20:58:00,790 - httpx - INFO - HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-17 20:58:09,025 - app.database.crud - INFO - Message created: 11 in conversation 8
+2026-03-17 20:58:09,025 - app.agent.agent - INFO - ✓ Message processed for conversation 8
+2026-03-17 20:58:09,625 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendMessage "HTTP/1.1 200 OK"
+2026-03-17 20:58:09,702 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:58:19,857 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:58:26,583 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:58:26,584 - app.telegram.telegram_handler - INFO - Mensaje de 1506837565: Zoom...
+2026-03-17 20:58:27,162 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendChatAction "HTTP/1.1 200 OK"
+2026-03-17 20:58:27,164 - app.tools.crm_tools - INFO - ✓ Created 5 CRM tools with DB session
+2026-03-17 20:58:27,164 - app.agent.agent - INFO - ✓ Agent initialized with openrouter
+2026-03-17 20:58:27,164 - app.agent.agent - INFO - ✓ 5 tools available
+2026-03-17 20:58:27,166 - app.database.crud - INFO - Message created: 12 in conversation 8
+2026-03-17 20:58:27,166 - app.agent.agent - INFO - Loaded 8 messages for conversation 8
+2026-03-17 20:58:28,022 - httpx - INFO - HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-17 20:58:31,004 - app.database.crud - INFO - Message created: 13 in conversation 8
+2026-03-17 20:58:31,004 - app.agent.agent - INFO - ✓ Message processed for conversation 8
+2026-03-17 20:58:31,286 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/sendMessage "HTTP/1.1 200 OK"
+2026-03-17 20:58:36,741 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:58:46,895 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:58:57,051 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:59:07,211 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:59:17,367 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:59:27,523 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:59:37,678 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:59:47,833 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 20:59:57,989 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:00:08,150 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:00:18,310 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:00:28,465 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:00:38,621 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:00:48,779 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:00:58,937 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:01:09,092 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:01:19,248 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:01:29,404 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:01:33,912 - __main__ - INFO - 
+⏹️  Señal de interrupción recibida
+2026-03-17 21:01:34,413 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8224241905:AAGVP2dHVfTuDaMOxLjfgvpL7ekEo5jFPX4/getUpdates "HTTP/1.1 200 OK"
+2026-03-17 21:01:34,413 - telegram.ext.Application - INFO - Application is stopping. This might take a moment.
+2026-03-17 21:01:34,413 - telegram.ext.Application - CRITICAL - Fetching updates was aborted due to CancelledError(). Suppressing exception to ensure graceful shutdown.
+Traceback (most recent call last):
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 641, in run_until_complete
+    self.run_forever()
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 608, in run_forever
+    self._run_once()
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 1898, in _run_once
+    event_list = self._selector.select(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/selectors.py", line 566, in select
+    kev_list = self._selector.control(None, max_ev, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cristiacelis/PC3/talentoTech/lead-reactivation-system/run_telegram_bot.py", line 65, in signal_handler
+    sys.exit(0)
+SystemExit: 0
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/cristiacelis/PC3/talentoTech/lead-reactivation-system/run_telegram_bot.py", line 50, in main
+    await asyncio.sleep(1)
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/tasks.py", line 649, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/cristiacelis/PC3/talentoTech/lead-reactivation-system/.venv/lib/python3.11/site-packages/telegram/ext/_application.py", line 673, in stop
+    self.__update_fetcher_task.result()
+  File "/Users/cristiacelis/PC3/talentoTech/lead-reactivation-system/.venv/lib/python3.11/site-packages/telegram/ext/_application.py", line 1233, in _update_fetcher
+    await self.__update_fetcher()
+  File "/Users/cristiacelis/PC3/talentoTech/lead-reactivation-system/.venv/lib/python3.11/site-packages/telegram/ext/_application.py", line 1212, in __update_fetcher
+    update = await self.update_queue.get()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/queues.py", line 158, in get
+    await getter
+asyncio.exceptions.CancelledError
+2026-03-17 21:01:34,425 - telegram.ext.Application - INFO - Application.stop() complete
+2026-03-17 21:01:34,426 - app.telegram.telegram_handler - INFO - ✓ Bot de Telegram detenido
+2026-03-17 21:01:34,426 - __main__ - INFO - 👋 Bot detenido
