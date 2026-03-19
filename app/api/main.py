@@ -372,16 +372,16 @@ async def get_dashboard_stats(db: Session = Depends(get_db)):
                     if requirements:
                         total_requirements += len(requirements)
 
-                        return {
-                                "total_leads": len(all_leads) if all_leads else 0,
-                                "cold_leads": len(cold_leads) if cold_leads else 0,
-                                "warm_leads": len(warm_leads) if warm_leads else 0,
-                                "hot_leads": len(hot_leads) if hot_leads else 0,
-                                "reactivated_leads": len(reactivated_leads) if reactivated_leads else 0,
-                                "active_conversations": active_conversations,
-                                "pending_escalations": len(pending_escalations) if pending_escalations else 0,
-                                "total_requirements": total_requirements,
-                                }
+        return {
+                    "total_leads": len(all_leads) if all_leads else 0,
+                    "cold_leads": len(cold_leads) if cold_leads else 0,
+                    "warm_leads": len(warm_leads) if warm_leads else 0,
+                    "hot_leads": len(hot_leads) if hot_leads else 0,
+                    "reactivated_leads": len(reactivated_leads) if reactivated_leads else 0,
+                    "active_conversations": active_conversations,
+                    "pending_escalations": len(pending_escalations) if pending_escalations else 0,
+                    "total_requirements": total_requirements,
+                    }
     except Exception as e:
             logger.error(f" Error getting dashboard stats: {e}")
             raise HTTPException(status_code=500, detail=str(e))

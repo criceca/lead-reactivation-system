@@ -184,6 +184,6 @@ class SimpleLeadReactivationAgent:
                 "debug_mode": settings.agent_debug,}
 
 
-    def get_agent(db: Session) -> SimpleLeadReactivationAgent:
+def get_agent(db: Session) -> SimpleLeadReactivationAgent:
             """Obtener instancia del agente"""
             return SimpleLeadReactivationAgent(db)
