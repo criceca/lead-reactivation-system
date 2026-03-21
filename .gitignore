@@ -16,3 +16,6 @@ __pycache__/
 !README.md
 !GUIA_RAPIDA.md
 .backup_old_versions
+
+# Database
+*.db
