@@ -161,6 +161,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     name = Column(String(255), nullable=False)
+    password_hash = Column(String(255), nullable=False)
     role = Column(String(50), default="user")  # user, negotiator, admin
     is_active = Column(Integer, default=1)
     created_at = Column(DateTime, default=datetime.utcnow)

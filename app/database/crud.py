@@ -369,9 +369,9 @@ def get_user_by_email(db: Session, email: str) -> User:
     return db.query(User).filter(User.email == email).first()
 
 
-def create_user(db: Session, email: str, name: str, role: str = "user") -> User:
+def create_user(db: Session, email: str, name: str, password_hash: str = "", role: str = "user") -> User:
     """Crear un nuevo usuario"""
-    user = User(email=email, name=name, role=role)
+    user = User(email=email, name=name, password_hash=password_hash, role=role)
     db.add(user)
     db.commit()
     db.refresh(user)
