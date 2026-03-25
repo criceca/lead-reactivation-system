@@ -242,7 +242,8 @@ async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
         conversation = crud.get_conversation(db, conversation_id)
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
-            return conversation
+        
+        return conversation
 
 
 @app.post("/api/conversations/{conversation_id}/message")
@@ -261,27 +262,27 @@ async def send_message(conversation_id: int,message: ConversationMessage,db: Ses
                 "agent_response": "Esta conversación ha sido escalada a un negociador humano.",
                 }
 
-                # Obtener agente mejorado
-                agent = get_agent(db)
+            # Obtener agente mejorado
+            agent = get_agent(db)
 
-                # Procesar mensaje
-                result = agent.process_message(conversation_id=conversation_id,lead_message=message.message,)
+            # Procesar mensaje
+            result = agent.process_message(conversation_id=conversation_id,lead_message=message.message,)
 
-                # Log audit
-                crud.create_audit_log(db=db,action="MESSAGE_PROCESSED",entity_type="message",
-                                        details=f"Processed message in conversation {conversation_id}",)
+            # Log audit
+            crud.create_audit_log(db=db,action="MESSAGE_PROCESSED",entity_type="message",
+                                    details=f"Processed message in conversation {conversation_id}",)
 
-                logger.info(f" Message processed in conversation {conversation_id}")
-                logger.info(f" Tools used: {result.get('tools_used', [])}")
+            logger.info(f" Message processed in conversation {conversation_id}")
+            logger.info(f" Tools used: {result.get('tools_used', [])}")
 
-                return {
-                "success": result.get("success", True),
-                "message": "Message processed",
-                "agent_response": result.get("message", ""),
-                "requirements_captured": result.get("requirements_captured", False),
-                "escalated": result.get("escalated", False),
-                "tools_used": result.get("tools_used", []),
-                }
+            return {
+            "success": result.get("success", True),
+            "message": "Message processed",
+            "agent_response": result.get("message", ""),
+            "requirements_captured": result.get("requirements_captured", False),
+            "escalated": result.get("escalated", False),
+            "tools_used": result.get("tools_used", []),
+            }
 
         except HTTPException:
             raise
@@ -298,14 +299,14 @@ async def get_conversation_summary(conversation_id: int,db: Session = Depends(ge
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
 
-            agent = get_agent(db)
-            summary = agent.get_conversation_summary(conversation_id)
+        agent = get_agent(db)
+        summary = agent.get_conversation_summary(conversation_id)
 
-            return {
-            "success": True,
-            "conversation_id": conversation_id,
-            "summary": summary,
-            }
+        return {
+        "success": True,
+        "conversation_id": conversation_id,
+        "summary": summary,
+        }
 
     except HTTPException:
             raise
