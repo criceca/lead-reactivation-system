@@ -75,33 +75,33 @@ class SimpleLeadReactivationAgent:
                 if not lead:
                     raise ValueError(f"Lead {lead_id} not found")
 
-                    initial_message = f"""Inicia una conversación de reactivación con:
-                                            - Nombre: {lead.name}
-                                            - Email: {lead.email}
-                                            - Empresa: {lead.company or 'No especificada'}
-                                            - Estado: {lead.status}
-                                            - Notas: {lead.notes or 'Sin notas'}
+                initial_message = f"""Inicia una conversación de reactivación con:
+                                        - Nombre: {lead.name}
+                                        - Email: {lead.email}
+                                        - Empresa: {lead.company or 'No especificada'}
+                                        - Estado: {lead.status}
+                                        - Notas: {lead.notes or 'Sin notas'}
 
-                                            Saluda de manera personal y pregunta cómo puedes ayudar."""
+                                        Saluda de manera personal y pregunta cómo puedes ayudar."""
 
-                    # Crear mensajes para el LLM
-                    messages = [ SystemMessage(content=SYSTEM_PROMPT),HumanMessage(content=initial_message)
-                                    ]
+                # Crear mensajes para el LLM
+                messages = [ SystemMessage(content=SYSTEM_PROMPT),HumanMessage(content=initial_message)
+                                ]
 
-                    # Invocar LLM
-                    response = self.llm.invoke(messages)
-                    response_text = response.content if hasattr(
-                    response, 'content') else str(response)
+                # Invocar LLM
+                response = self.llm.invoke(messages)
+                response_text = response.content if hasattr(
+                response, 'content') else str(response)
 
-                    # Guardar mensaje
-                    crud.create_message(db=self.db,conversation_id=conversation_id,role="agent",content=response_text)
+                # Guardar mensaje
+                crud.create_message(db=self.db,conversation_id=conversation_id,role="agent",content=response_text)
 
-                    # Actualizar lead
-                    crud.update_lead(self.db,lead_id,status="warm",last_contact=datetime.utcnow())
+                # Actualizar lead
+                crud.update_lead(self.db,lead_id,status="warm",last_contact=datetime.utcnow())
 
-                    logger.info(f" Reactivation initiated for lead {lead_id}")
+                logger.info(f" Reactivation initiated for lead {lead_id}")
 
-                    return {"success": True,"message": response_text,"conversation_id": conversation_id,}
+                return {"success": True,"message": response_text,"conversation_id": conversation_id,}
 
         except Exception as e:
                 logger.error(f" Error initiating reactivation: {e}")
