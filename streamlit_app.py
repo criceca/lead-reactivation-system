@@ -172,6 +172,16 @@ def get_conversation(conversation_id):
         st.error(f"Error obteniendo conversación: {e}")
     return None
 
+def get_message(conversation_id):
+    """Obtener historial de conversación"""
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/conversations/{conversation_id}/message", timeout=5)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        st.error(f"Error obteniendo mensaje de la conversacion: {e}")
+    return None
+
 def send_message(conversation_id, message):
     """Enviar mensaje en una conversación"""
     try:
@@ -384,8 +394,9 @@ elif page == " Conversaciones":
         conv_data = get_conversation(conversation_id)
         if conv_data:
             st.info(f"**Lead ID:** {conv_data.get('lead_id')} | **Estado:** {conv_data.get('status')}")
-            if conv_data.get("messages"):
-                for msg in conv_data["messages"]:
+            conv_message = get_message(conversation_id)
+            if conv_message:
+                for msg in conv_message:
                     with st.chat_message(msg["role"]):
                         st.write(msg["content"])
             

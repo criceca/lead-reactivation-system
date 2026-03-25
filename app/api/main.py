@@ -249,8 +249,15 @@ async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
         conversation = crud.get_conversation(db, conversation_id)
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
-            return conversation
+        return conversation
 
+@app.get("/api/conversations/{conversation_id}/message")
+async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
+        """Obtener una conversación"""
+        conversation = crud.get_messages_by_conversation(db, conversation_id)
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Message not found")
+        return conversation
 
 @app.post("/api/conversations/{conversation_id}/message")
 async def send_message(conversation_id: int,message: ConversationMessage,db: Session = Depends(get_db),):

@@ -102,6 +102,7 @@ def delete_lead(db: Session, lead_id: int) -> bool:
 
 def get_conversation(db: Session, conversation_id: int) -> Conversation:
     """Obtener una conversación por ID"""
+    # print (db.query(Conversation).filter(Conversation.id == conversation_id).first())
     return db.query(Conversation).filter(Conversation.id == conversation_id).first()
 
 
