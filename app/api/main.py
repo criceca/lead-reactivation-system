@@ -9,7 +9,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
-from app.database.db import get_db, init_db
+from app.database.db import get_db, init_db, get_session
+from app.auth import authenticate_user, create_user as auth_create_user, ensure_admin_exists
 from app.schemas.schemas import (
     LeadCreate,
     LeadUpdate,
@@ -61,7 +62,14 @@ async def startup_event():
     try:
         init_db()
         logger.info(" Database initialized")
-        logger.info(f" LLM Provider: {settings.llm_provider if hasattr(settings, 'llm_provider') else 'OpenAI'}")
+        # Crear usuario admin por defecto si no existe ninguno
+        db = get_session()
+        try:
+            ensure_admin_exists(db)
+        finally:
+            db.close()
+        logger.info(
+        f" LLM Provider: {settings.llm_provider if hasattr(settings, 'llm_provider') else 'OpenAI'}")
         logger.info(f" Environment: {settings.environment}")
     except Exception as e:
         logger.error(f" Error initializing database: {e}")
@@ -447,6 +455,37 @@ async def get_dashboard_stats(db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f" Error getting dashboard stats: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# ============ AUTH ENDPOINTS ============
+
+@app.post("/api/auth/login")
+async def login(credentials: dict, db: Session = Depends(get_db)):
+    """Autenticar usuario con email y contraseña"""
+    email = credentials.get("email", "")
+    password = credentials.get("password", "")
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email y contraseña requeridos")
+    user = authenticate_user(db, email, password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+    return {"success": True, "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role}}
+
+
+@app.post("/api/auth/register")
+async def register(data: dict, db: Session = Depends(get_db)):
+    """Registrar nuevo usuario (solo admin puede crear admins)"""
+    email = data.get("email", "")
+    name = data.get("name", "")
+    password = data.get("password", "")
+    role = data.get("role", "user")
+    if not email or not name or not password:
+        raise HTTPException(status_code=400, detail="Email, nombre y contraseña requeridos")
+    existing = crud.get_user_by_email(db, email)
+    if existing:
+        raise HTTPException(status_code=400, detail="El email ya está registrado")
+    user = auth_create_user(db, email=email, name=name, password=password, role=role)
+    return {"success": True, "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role}}
+
 
 # ============ ERROR HANDLERS ============
 

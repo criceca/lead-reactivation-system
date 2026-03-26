@@ -389,7 +389,8 @@ lead-reactivation-system/
 │   │   └── crud.py              # CRUD operations
 │   ├── agent/
 │   │   ├── __init__.py
-│   │   └── agent.py             # Agente LangChain
+│   │   ├── agent.py             # Agente LangChain principal
+│   │   └── agent_simple.py      # Agente simplificado compatible
 │   ├── tools/
 │   │   ├── __init__.py
 │   │   └── crm_tools.py         # 5 Tools del agente
@@ -570,12 +571,9 @@ uv venv --python 3.11
 ## 📚 Documentación Adicional
 
 - **Guía Rápida:** `GUIA_RAPIDA.md` - Instrucciones completas de instalación y uso
-- **Proveedores LLM:** `PROVEEDORES_LLM.md` - Configuración de OpenAI, OpenRouter, DeepSeek, Bedrock
-- **Bot de Telegram:** `TELEGRAM_BOT_GUIA.md` - Guía completa del bot
-- **Integración Telegram:** `TELEGRAM_INTEGRACION.md` - Cómo funciona la integración
-- **Ejemplos API:** `EJEMPLOS_API.md` - Ejemplos de uso de la API
-- **Streamlit:** `README_STREAMLIT.md` - Guía de la interfaz gráfica
-- **Arquitectura:** `ARCHITECTURE.md` - Arquitectura del sistema
+- **Arquitectura:** `ARCHITECTURE.md` - Arquitectura detallada del sistema
+- **Integración Bedrock:** `BEDROCK_INTEGRATION_NOTES.md` - Notas de integración con AWS Bedrock
+- **Lista de Tareas:** `todo.md` - Tareas pendientes y mejoras
 - [LangChain Docs](https://python.langchain.com/)
 - [FastAPI Docs](https://fastapi.tiangolo.com/)
 - [Streamlit Docs](https://docs.streamlit.io/)

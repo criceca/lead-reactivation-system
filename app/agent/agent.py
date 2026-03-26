@@ -73,6 +73,7 @@ class SimpleLeadReactivationAgent:
 
     def initiate_reactivation(self, lead_id: int, conversation_id: int) -> Dict[str, Any]:
         """Iniciar reactivación de un lead"""
+
         try:
             lead = crud.get_lead(self.db, lead_id)
             if not lead:

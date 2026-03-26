@@ -333,6 +333,16 @@ def get_conversation(conversation_id):
         st.error(f"Error obteniendo conversación: {e}")
     return None
 
+def get_message(conversation_id):
+    """Obtener historial de conversación"""
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/conversations/{conversation_id}/message", timeout=5)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        st.error(f"Error obteniendo mensaje de la conversacion: {e}")
+    return None
+
 def send_message(conversation_id, message):
     try:
         response = requests.post(
