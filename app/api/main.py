@@ -308,6 +308,14 @@ async def initiate_reactivation(lead_id: int, db: Session = Depends(get_db)):
 
 # ============ CONVERSATIONS ENDPOINTS ============
 
+@app.get("/api/conversations/{conversation_id}/message")
+async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
+        """Obtener una conversación"""
+        conversation = crud.get_messages_by_conversation(db, conversation_id)
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Message not found")
+        return conversation
+
 @app.get("/api/conversations/{conversation_id}", response_model=Conversation)
 async def get_conversation(conversation_id: int, db: Session = Depends(get_db)):
     """Obtener una conversación"""
