@@ -253,6 +253,7 @@ async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
         conversation = crud.get_conversation(db, conversation_id)
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
+        
         return conversation
 
 @app.get("/api/conversations/{conversation_id}/message")
