@@ -25,6 +25,7 @@ Channel,
 )
 from app.database import crud
 from app.agent.agent import get_agent
+from app.mail.mail import send_email
 
 # Configuración de logging
 logging.basicConfig(
@@ -200,7 +201,10 @@ async def initiate_reactivation(lead_id: int, db: Session = Depends(get_db)):
                                 "conversation_id": conversation.id,"agent_response": result.get("message", ""),
                                  "channel": "telegram","telegram_sent": True, }
                     else:
-                        logger.warning(f" No se pudo enviar por Telegram, el lead debe iniciar /start primero")
+                        # Crear funcion para enviar correo
+                        send_email(lead, result)
+
+                        logger.info(f" Se envio mensaje por correo para iniciar la conversación con el bot")
                         return {"success": True,
                                 "message": "Reactivation prepared. Lead needs to start conversation with /start",
                                 "conversation_id": conversation.id,
