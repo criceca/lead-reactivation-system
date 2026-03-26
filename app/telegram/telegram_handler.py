@@ -4,7 +4,7 @@ Manejador mejorado de Telegram con manejo robusto de errores
 
 import logging
 from typing import Optional, Dict
-from telegram import Update
+from telegram import Update 
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram.constants import ChatAction
 
@@ -105,7 +105,7 @@ class ImprovedTelegramHandler:
                 # Buscar por telegram_user_id en email temporal
                 if not lead:
                     logger.info(f"Buscando lead por telegram_user_id: {user.id}")
-                    lead = crud.get_lead_by_email(db, f"telegram_{user.id}@telegram.local")
+                    lead = crud.get_lead_by_email(db, f"telegram_{user.id}@telegram.com")
                     if lead:
                         logger.info(f"Lead encontrado por user_id: {lead.id} - {lead.name}")
                 
@@ -115,7 +115,7 @@ class ImprovedTelegramHandler:
                     lead = crud.create_lead(
                         db=db,
                         name=user.full_name or user.username or "Usuario Telegram",
-                        email=f"telegram_{user.id}@telegram.local",
+                        email=f"telegram_{user.id}@telegram.com",
                         phone=f"@{user.username}" if user.username else None,
                         company=None,
                         status="warm",
@@ -171,7 +171,7 @@ Comandos disponibles:
                 logger.info("Iniciando agente...")
                 from app.agent.agent import get_agent
                 agent = get_agent(db)
-                
+
                 result = agent.initiate_reactivation(
                     lead_id=lead.id,
                     conversation_id=conversation.id

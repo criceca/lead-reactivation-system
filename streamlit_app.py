@@ -23,42 +23,75 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 # Estilos CSS personalizados
 st.markdown("""
     <style>
-    .main {
-        padding: 2rem;
-    }
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-        margin: 0.5rem 0;
-    }
-    .status-cold {
-        color: #2196F3;
-        font-weight: bold;
-    }
-    .status-warm {
-        color: #FF9800;
-        font-weight: bold;
-    }
-    .status-hot {
-        color: #F44336;
-        font-weight: bold;
-    }
-    .status-reactivated {
-        color: #4CAF50;
-        font-weight: bold;
-    }
-    .channel-badge {
-        background-color: #E3F2FD;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.85rem;
-    }
+    .main { padding: 2rem; }
+    .metric-card { background-color: #f0f2f6; padding: 1.5rem; border-radius: 0.5rem; margin: 0.5rem 0; }
+    .status-cold { color: #2196F3; font-weight: bold; }
+    .status-warm { color: #FF9800; font-weight: bold; }
+    .status-hot { color: #F44336; font-weight: bold; }
+    .status-reactivated { color: #4CAF50; font-weight: bold; }
+    .channel-badge { background-color: #E3F2FD; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.85rem; }
+    .login-container { max-width: 400px; margin: 4rem auto; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     </style>
 """, unsafe_allow_html=True)
 
+
+# ============ AUTENTICACIÓN ============
+
+def do_login(email: str, password: str) -> bool:
+    """Llama al endpoint de login y guarda el usuario en session_state"""
+    try:
+        resp = requests.post(
+            f"{API_BASE_URL}/api/auth/login",
+            json={"email": email, "password": password},
+            timeout=5,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            st.session_state["user"] = data["user"]
+            return True
+        return False
+    except Exception:
+        return False
+
+
+def show_login_page():
+    """Renderiza la pantalla de login"""
+    st.markdown("<h2 style='text-align:center;margin-bottom:0.5rem;'>Reactivación de Leads</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;color:#666;margin-bottom:2rem;'>Inicia sesión para continuar</p>", unsafe_allow_html=True)
+
+    with st.form("login_form"):
+        email = st.text_input("Email", placeholder="usuario@empresa.com")
+        password = st.text_input("Contraseña", type="password", placeholder="••••••••")
+        submitted = st.form_submit_button("Iniciar sesión", use_container_width=True)
+
+        if submitted:
+            if not email or not password:
+                st.error("Ingresa email y contraseña")
+            else:
+                with st.spinner("Verificando..."):
+                    ok = do_login(email, password)
+                if ok:
+                    st.rerun()
+                else:
+                    st.error("Credenciales inválidas")
+
+    st.caption("Usuario por defecto: admin@leadreactivation.com / admin1234")
+
+
+# Verificar sesión activa
+if "user" not in st.session_state:
+    show_login_page()
+    st.stop()
+
+# ============ APP PRINCIPAL (solo si está autenticado) ============
+
+user = st.session_state["user"]
+
+# Estilos CSS personalizados (ya incluidos arriba)
+
 # Sidebar Navigation
 st.sidebar.title(" Reactivación de Leads")
+st.sidebar.markdown(f"Hola, **{user['name']}** ({user['role']})")
 st.sidebar.markdown("---")
 
 # Health check de la API
@@ -77,7 +110,12 @@ st.sidebar.markdown("---")
 page = st.sidebar.radio(
     "Navegación",
     [" Dashboard", " Gestionar Leads", " Conversaciones", " Escalaciones", " Análisis"]
+    + ([" Usuarios"] if user["role"] == "admin" else [])
 )
+
+if st.sidebar.button(" Cerrar sesión", use_container_width=True):
+    del st.session_state["user"]
+    st.rerun()
 
 # Funciones auxiliares
 @st.cache_data(ttl=30)
@@ -132,6 +170,16 @@ def get_conversation(conversation_id):
             return response.json()
     except Exception as e:
         st.error(f"Error obteniendo conversación: {e}")
+    return None
+
+def get_message(conversation_id):
+    """Obtener historial de conversación"""
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/conversations/{conversation_id}/message", timeout=5)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        st.error(f"Error obteniendo mensaje de la conversacion: {e}")
     return None
 
 def send_message(conversation_id, message):
@@ -346,8 +394,9 @@ elif page == " Conversaciones":
         conv_data = get_conversation(conversation_id)
         if conv_data:
             st.info(f"**Lead ID:** {conv_data.get('lead_id')} | **Estado:** {conv_data.get('status')}")
-            if conv_data.get("messages"):
-                for msg in conv_data["messages"]:
+            conv_message = get_message(conversation_id)
+            if conv_message:
+                for msg in conv_message:
                     with st.chat_message(msg["role"]):
                         st.write(msg["content"])
             
@@ -386,6 +435,42 @@ elif page == " Análisis":
             "Cantidad": [stats.get("cold_leads", 0), stats.get("warm_leads", 0), stats.get("hot_leads", 0), stats.get("reactivated_leads", 0)]
         })
         st.bar_chart(data.set_index("Estado"))
+
+# ============ PÁGINA: USUARIOS (solo admin) ============
+elif page == " Usuarios":
+    st.title(" Gestión de Usuarios")
+    tab1, tab2 = st.tabs(["Crear Usuario", "Info"])
+
+    with tab1:
+        st.subheader("Nuevo Usuario")
+        with st.form("create_user_form"):
+            col1, col2 = st.columns(2)
+            with col1:
+                u_name = st.text_input("Nombre *")
+                u_email = st.text_input("Email *")
+            with col2:
+                u_password = st.text_input("Contraseña *", type="password")
+                u_role = st.selectbox("Rol", ["user", "negotiator", "admin"])
+            submitted = st.form_submit_button("Crear Usuario", use_container_width=True)
+            if submitted:
+                if not u_name or not u_email or not u_password:
+                    st.error("Todos los campos son obligatorios")
+                else:
+                    try:
+                        resp = requests.post(
+                            f"{API_BASE_URL}/api/auth/register",
+                            json={"name": u_name, "email": u_email, "password": u_password, "role": u_role},
+                            timeout=5,
+                        )
+                        if resp.status_code == 200:
+                            st.success(f"Usuario {u_email} creado correctamente")
+                        else:
+                            st.error(resp.json().get("detail", "Error creando usuario"))
+                    except Exception as e:
+                        st.error(f"Error: {e}")
+
+    with tab2:
+        st.info("Los roles disponibles son: user (acceso básico), negotiator (gestiona escalaciones), admin (acceso total).")
 
 # Footer
 st.divider()
