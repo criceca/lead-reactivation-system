@@ -4,7 +4,7 @@ Manejador mejorado de Telegram con manejo robusto de errores
 
 import logging
 from typing import Optional, Dict
-from telegram import Update
+from telegram import Update 
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram.constants import ChatAction
 
@@ -171,7 +171,7 @@ Comandos disponibles:
                 logger.info("Iniciando agente...")
                 from app.agent.agent import get_agent
                 agent = get_agent(db)
-                
+
                 result = agent.initiate_reactivation(
                     lead_id=lead.id,
                     conversation_id=conversation.id
