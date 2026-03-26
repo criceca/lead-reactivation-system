@@ -287,7 +287,11 @@ async def initiate_reactivation(lead_id: int, db: Session = Depends(get_db)):
         )
 
         logger.info(f" Reactivation initiated for lead {lead_id}")
+<<<<<<< HEAD
 #lopg tools used
+=======
+
+>>>>>>> parent of 7f497ce (Merge pull request #15 from criceca/Dev_Andres)
         return {
             "success": result.get("success",True),
             "message": "Reactivation process initiated",
