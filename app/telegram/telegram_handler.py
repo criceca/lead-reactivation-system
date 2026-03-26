@@ -105,7 +105,7 @@ class ImprovedTelegramHandler:
                 # Buscar por telegram_user_id en email temporal
                 if not lead:
                     logger.info(f"Buscando lead por telegram_user_id: {user.id}")
-                    lead = crud.get_lead_by_email(db, f"telegram_{user.id}@telegram.com")
+                    lead = crud.get_lead_by_email(db, f"telegram_{user.id}@telegram.local")
                     if lead:
                         logger.info(f"Lead encontrado por user_id: {lead.id} - {lead.name}")
                 
@@ -115,7 +115,7 @@ class ImprovedTelegramHandler:
                     lead = crud.create_lead(
                         db=db,
                         name=user.full_name or user.username or "Usuario Telegram",
-                        email=f"telegram_{user.id}@telegram.com",
+                        email=f"telegram_{user.id}@telegram.local",
                         phone=f"@{user.username}" if user.username else None,
                         company=None,
                         status="warm",
