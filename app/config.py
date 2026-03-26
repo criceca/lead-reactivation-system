@@ -59,6 +59,10 @@ class Settings(BaseSettings):
     aws_region: str = os.getenv("AWS_REGION", "us-east-1")
     aws_s3_bucket: str = os.getenv("AWS_S3_BUCKET", "")
 
+    # ============ Admin por defecto ============
+    admin_email: str = os.getenv("ADMIN_EMAIL", "admin@leadreactivation.com")
+    admin_password: str = os.getenv("ADMIN_PASSWORD", "admin1234")
+
     # ============ API Configuration ============
     api_host: str = os.getenv("API_HOST", "0.0.0.0")
     api_port: int = int(os.getenv("API_PORT", "8000"))

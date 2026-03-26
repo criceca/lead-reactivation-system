@@ -102,6 +102,7 @@ def delete_lead(db: Session, lead_id: int) -> bool:
 
 def get_conversation(db: Session, conversation_id: int) -> Conversation:
     """Obtener una conversación por ID"""
+    # print (db.query(Conversation).filter(Conversation.id == conversation_id).first())
     return db.query(Conversation).filter(Conversation.id == conversation_id).first()
 
 
@@ -369,9 +370,9 @@ def get_user_by_email(db: Session, email: str) -> User:
     return db.query(User).filter(User.email == email).first()
 
 
-def create_user(db: Session, email: str, name: str, role: str = "user") -> User:
+def create_user(db: Session, email: str, name: str, password_hash: str = "", role: str = "user") -> User:
     """Crear un nuevo usuario"""
-    user = User(email=email, name=name, role=role)
+    user = User(email=email, name=name, password_hash=password_hash, role=role)
     db.add(user)
     db.commit()
     db.refresh(user)
