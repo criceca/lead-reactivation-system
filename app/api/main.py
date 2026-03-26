@@ -9,7 +9,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
-from app.database.db import get_db, init_db
+from app.database.db import get_db, init_db, get_session
+from app.auth import authenticate_user, create_user as auth_create_user, ensure_admin_exists
 from app.schemas.schemas import (
 LeadCreate,
 LeadUpdate,
@@ -52,6 +53,12 @@ async def startup_event():
     try:
         init_db()
         logger.info(" Database initialized")
+        # Crear usuario admin por defecto si no existe ninguno
+        db = get_session()
+        try:
+            ensure_admin_exists(db)
+        finally:
+            db.close()
         logger.info(
         f" LLM Provider: {settings.llm_provider if hasattr(settings, 'llm_provider') else 'OpenAI'}")
         logger.info(f" Environment: {settings.environment}")
@@ -242,8 +249,15 @@ async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
         conversation = crud.get_conversation(db, conversation_id)
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
-            return conversation
+        return conversation
 
+@app.get("/api/conversations/{conversation_id}/message")
+async def get_conversation(conversation_id: int,db: Session = Depends(get_db)):
+        """Obtener una conversación"""
+        conversation = crud.get_messages_by_conversation(db, conversation_id)
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Message not found")
+        return conversation
 
 @app.post("/api/conversations/{conversation_id}/message")
 async def send_message(conversation_id: int,message: ConversationMessage,db: Session = Depends(get_db),):
@@ -261,27 +275,27 @@ async def send_message(conversation_id: int,message: ConversationMessage,db: Ses
                 "agent_response": "Esta conversación ha sido escalada a un negociador humano.",
                 }
 
-                # Obtener agente mejorado
-                agent = get_agent(db)
+            # Obtener agente mejorado
+            agent = get_agent(db)
 
-                # Procesar mensaje
-                result = agent.process_message(conversation_id=conversation_id,lead_message=message.message,)
+            # Procesar mensaje
+            result = agent.process_message(conversation_id=conversation_id,lead_message=message.message,)
 
-                # Log audit
-                crud.create_audit_log(db=db,action="MESSAGE_PROCESSED",entity_type="message",
-                                        details=f"Processed message in conversation {conversation_id}",)
+            # Log audit
+            crud.create_audit_log(db=db,action="MESSAGE_PROCESSED",entity_type="message",
+                                    details=f"Processed message in conversation {conversation_id}",)
 
-                logger.info(f" Message processed in conversation {conversation_id}")
-                logger.info(f" Tools used: {result.get('tools_used', [])}")
+            logger.info(f" Message processed in conversation {conversation_id}")
+            logger.info(f" Tools used: {result.get('tools_used', [])}")
 
-                return {
-                "success": result.get("success", True),
-                "message": "Message processed",
-                "agent_response": result.get("message", ""),
-                "requirements_captured": result.get("requirements_captured", False),
-                "escalated": result.get("escalated", False),
-                "tools_used": result.get("tools_used", []),
-                }
+            return {
+            "success": result.get("success", True),
+            "message": "Message processed",
+            "agent_response": result.get("message", ""),
+            "requirements_captured": result.get("requirements_captured", False),
+            "escalated": result.get("escalated", False),
+            "tools_used": result.get("tools_used", []),
+            }
 
         except HTTPException:
             raise
@@ -298,14 +312,14 @@ async def get_conversation_summary(conversation_id: int,db: Session = Depends(ge
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
 
-            agent = get_agent(db)
-            summary = agent.get_conversation_summary(conversation_id)
+        agent = get_agent(db)
+        summary = agent.get_conversation_summary(conversation_id)
 
-            return {
-            "success": True,
-            "conversation_id": conversation_id,
-            "summary": summary,
-            }
+        return {
+        "success": True,
+        "conversation_id": conversation_id,
+        "summary": summary,
+        }
 
     except HTTPException:
             raise
@@ -385,6 +399,37 @@ async def get_dashboard_stats(db: Session = Depends(get_db)):
     except Exception as e:
             logger.error(f" Error getting dashboard stats: {e}")
             raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============ AUTH ENDPOINTS ============
+
+@app.post("/api/auth/login")
+async def login(credentials: dict, db: Session = Depends(get_db)):
+    """Autenticar usuario con email y contraseña"""
+    email = credentials.get("email", "")
+    password = credentials.get("password", "")
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email y contraseña requeridos")
+    user = authenticate_user(db, email, password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+    return {"success": True, "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role}}
+
+
+@app.post("/api/auth/register")
+async def register(data: dict, db: Session = Depends(get_db)):
+    """Registrar nuevo usuario (solo admin puede crear admins)"""
+    email = data.get("email", "")
+    name = data.get("name", "")
+    password = data.get("password", "")
+    role = data.get("role", "user")
+    if not email or not name or not password:
+        raise HTTPException(status_code=400, detail="Email, nombre y contraseña requeridos")
+    existing = crud.get_user_by_email(db, email)
+    if existing:
+        raise HTTPException(status_code=400, detail="El email ya está registrado")
+    user = auth_create_user(db, email=email, name=name, password=password, role=role)
+    return {"success": True, "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role}}
 
 
 # ============ ERROR HANDLERS ============
