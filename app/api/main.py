@@ -25,6 +25,7 @@ from app.schemas.schemas import (
 )
 from app.database import crud
 from app.agent.agent import get_agent
+from app.mail.mail import send_email
 
 # Configuración de logging
 logging.basicConfig(
@@ -286,7 +287,78 @@ async def initiate_reactivation(lead_id: int, db: Session = Depends(get_db)):
             details=f"Initiated reactivation for lead: {lead.name}",
         )
 
-        logger.info(f" Reactivation initiated for lead {lead_id}")
+@app.post("/api/leads/{lead_id}/reactivate")
+async def initiate_reactivation(lead_id: int, db: Session = Depends(get_db)):
+        """Iniciar proceso de reactivación de un lead"""
+        try:
+                lead = crud.get_lead(db, lead_id)
+                if not lead:
+                    raise HTTPException(status_code=404, detail="Lead not found")
+
+                # Verificar si el lead tiene Telegram como canal preferido
+                if lead.preferred_channel == "telegram":
+                    # Intentar contacto proactivo por Telegram
+                    from app.telegram.telegram_handler import get_telegram_handler
+                    telegram_handler = get_telegram_handler()
+
+                    # Crear conversación primero
+                    conversation = crud.create_conversation(db=db,lead_id=lead_id,agent_id="lead-reactivation-agent", channel="telegram",)
+
+                    # Obtener agente para generar mensaje inicial
+                    agent = get_agent(db)
+                    result = agent.initiate_reactivation(lead_id=lead_id, conversation_id=conversation.id,)
+
+                    # Intentar enviar por Telegram
+                    telegram_sent = await telegram_handler.initiate_contact_with_lead(lead_id=lead_id,message=result.get("message", "Hola, ¿cómo estás?"))
+
+                    if telegram_sent:
+                        logger.info(f" Mensaje enviado por Telegram a lead {lead_id}")
+                        return {"success": True,"message": "Reactivation initiated via Telegram",
+                                "conversation_id": conversation.id,"agent_response": result.get("message", ""),
+                                 "channel": "telegram","telegram_sent": True, }
+                    else:
+                        # Crear funcion para enviar correo
+                        send_email(lead, result)
+
+                        logger.info(f" Se envio mensaje por correo para iniciar la conversación con el bot")
+                        return {"success": True,
+                                "message": "Reactivation prepared. Lead needs to start conversation with /start",
+                                "conversation_id": conversation.id,
+                                "agent_response": result.get("message",""),
+                                "channel": "telegram",
+                                "telegram_sent": False,
+                                "note": "Lead must send /start to the bot first"}
+
+                # Si no es Telegram, usar el flujo normal (API)
+                conversation = crud.create_conversation(db=db,lead_id=lead_id,agent_id="lead-reactivation-agent",
+                                                        channel="api",)
+
+                # Obtener agente mejorado con sesión de DB
+                agent = get_agent(db)
+
+                # Iniciar reactivación
+                result = agent.initiate_reactivation(lead_id=lead_id,conversation_id=conversation.id,)
+
+                # Log audit
+                crud.create_audit_log(db=db,action="REACTIVATION_INITIATED",entity_type="conversation",entity_id=conversation.id,
+                                      details=f"Initiated reactivation for lead: {lead.name}",)
+
+                logger.info(f" Reactivation initiated for lead {lead_id}")
+
+                return {"success": result.get("success",True),
+                            "message": "Reactivation process initiated",
+                            "conversation_id": conversation.id,
+                            "agent_response": result.get(
+                            "message",""),
+                            "tools_used": [str(step) for step in result.get("intermediate_steps",[])],
+                            "channel": "api",
+                            }
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f" Error initiating reactivation: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
 
         return {
             "success": result.get("success",True),
