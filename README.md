@@ -377,9 +377,10 @@ lead-reactivation-system/
 ├── app/
 │   ├── __init__.py
 │   ├── config.py                 # Configuración centralizada
+│   ├── auth.py                   # Autenticación y hashing de contraseñas
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── models.py            # Modelos SQLAlchemy
+│   │   └── models.py            # Modelos SQLAlchemy (7 tablas)
 │   ├── schemas/
 │   │   ├── __init__.py
 │   │   └── schemas.py           # Schemas Pydantic con enums
@@ -389,8 +390,7 @@ lead-reactivation-system/
 │   │   └── crud.py              # CRUD operations
 │   ├── agent/
 │   │   ├── __init__.py
-│   │   ├── agent.py             # Agente LangChain principal
-│   │   └── agent_simple.py      # Agente simplificado compatible
+│   │   └── agent.py             # Agente LangChain con tools
 │   ├── tools/
 │   │   ├── __init__.py
 │   │   └── crm_tools.py         # 5 Tools del agente
@@ -400,11 +400,12 @@ lead-reactivation-system/
 │   ├── telegram/
 │   │   ├── __init__.py
 │   │   └── telegram_handler.py  # Handler del bot
-│   ├── api/
+│   ├── mail/
 │   │   ├── __init__.py
-│   │   └── main.py              # API FastAPI
-│   └── services/
-│       └── __init__.py
+│   │   └── mail.py              # Envío de emails (opcional)
+│   ├── api/
+│       ├── __init__.py
+│       └── main.py              # API FastAPI con 15+ endpoints
 ├── tests/                        # Tests unitarios
 ├── logs/                         # Logs de aplicación
 ├── data/                         # Datos locales
