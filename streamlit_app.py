@@ -1079,6 +1079,54 @@ st.sidebar.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# ============ AUTENTICACIÓN ============
+
+def do_login(email: str, password: str) -> bool:
+    """Llama al endpoint de login y guarda el usuario en session_state"""
+    try:
+        resp = requests.post(
+            f"{API_BASE_URL}/api/auth/login",
+            json={"email": email, "password": password},
+            timeout=5,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            st.session_state["user"] = data["user"]
+            return True
+        return False
+    except Exception:
+        return False
+
+
+def show_login_page():
+    """Renderiza la pantalla de login"""
+    st.markdown("<h2 style='text-align:center;margin-bottom:0.5rem;'>Reactivación de Leads</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;color:#666;margin-bottom:2rem;'>Inicia sesión para continuar</p>", unsafe_allow_html=True)
+
+    with st.form("login_form"):
+        email = st.text_input("Email", placeholder="usuario@empresa.com")
+        password = st.text_input("Contraseña", type="password", placeholder="••••••••")
+        submitted = st.form_submit_button("Iniciar sesión", use_container_width=True)
+
+        if submitted:
+            if not email or not password:
+                st.error("Ingresa email y contraseña")
+            else:
+                with st.spinner("Verificando..."):
+                    ok = do_login(email, password)
+                if ok:
+                    st.rerun()
+                else:
+                    st.error("Credenciales inválidas")
+
+    st.caption("Usuario por defecto: admin@leadreactivation.com / admin1234")
+
+
+# Verificar sesión activa
+if "user" not in st.session_state:
+    show_login_page()
+    st.stop()
+
 st.sidebar.markdown("---")
 
 # Health check
